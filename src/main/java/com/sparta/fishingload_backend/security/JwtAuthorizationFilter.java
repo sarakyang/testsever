@@ -43,7 +43,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 Claims info = jwtUtil.getUserInfoFromToken(refreshToken);
                 String userId = info.getSubject();
 
-                RefreshToken existRefreshToken = (RefreshToken) refreshTokenRepository.findByUserId(userId).orElseThrow(() ->
+                RefreshToken existRefreshToken = refreshTokenRepository.findByUserId(userId).orElseThrow(() ->
                         new IllegalArgumentException("유효하지 않는 토큰입니다."));
                 String existRefreshTokenCode = jwtUtil.substringToken(existRefreshToken.getToken());
                 if (!existRefreshTokenCode.equals(refreshToken)) throw new IllegalArgumentException("유효하지 않는 토큰입니다.");
