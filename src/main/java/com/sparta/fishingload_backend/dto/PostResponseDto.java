@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class PostResponseDto {
     private Long id;
     private String title;
-    private String nickname;
+    private String accountId;
     private String contents;
     private int postLike;
     private LocalDateTime createdTime;
@@ -24,7 +24,7 @@ public class PostResponseDto {
     public PostResponseDto(Post post) {
         this.id = post.getId();
         this.title = post.getTitle();
-        this.nickname = post.getNickname();
+        this.accountId = post.getAccountId();
         this.contents = post.getContents();
         this.postLike = post.getPostLike();
         this.createdTime = post.getCreatedTime();

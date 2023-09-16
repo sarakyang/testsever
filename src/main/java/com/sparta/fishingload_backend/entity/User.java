@@ -34,7 +34,7 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
-    @Column(name = "account_Use")
+    @Column(name = "account_use")
     private boolean accountUse= true ;
 
     @OneToMany

@@ -22,8 +22,8 @@ public class Post extends Timestamped{
     @Column(name = "contents", nullable = false, length = 500)
     private String contents;
 
-    @Column(name="nickname",nullable = false)
-    private String nickname;
+    @Column(name="account_id",nullable = false)
+    private String accountId;
 
     @Column(name = "postlike", nullable = false)
     private int postLike = 0;
@@ -41,6 +41,13 @@ public class Post extends Timestamped{
     private Category category;
 
     public Post(PostRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+        this.contents = requestDto.getContents();
+        this.fishtype = requestDto.getFishtype();
+        this.locationdate = requestDto.getLocationdate();
+    }
+
+    public void update(PostRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
         this.fishtype = requestDto.getFishtype();

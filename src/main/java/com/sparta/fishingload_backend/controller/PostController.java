@@ -34,4 +34,9 @@ public class PostController {
     public PostResponseDto getPost(@PathVariable Long id) {
         return postService.getPost(id);
     }
+
+    @PutMapping("/post/{id}")
+    public PostResponseDto updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return postService.updatePost(id, requestDto, userDetails.getUser());
+    }
 }
