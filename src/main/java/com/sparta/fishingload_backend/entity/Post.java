@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -40,6 +43,9 @@ public class Post extends Timestamped{
     @ManyToOne
     private Category category;
 
+    @OneToMany(mappedBy = "post")
+    private List<PostLike> postLikeList = new ArrayList<>();
+
     public Post(PostRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
@@ -52,5 +58,10 @@ public class Post extends Timestamped{
         this.contents = requestDto.getContents();
         this.fishtype = requestDto.getFishtype();
         this.locationdate = requestDto.getLocationdate();
+    }
+
+    public void addPostLikeList(PostLike postLike) {
+        this.postLikeList.add(postLike);
+        postLike.setPost(this);
     }
 }

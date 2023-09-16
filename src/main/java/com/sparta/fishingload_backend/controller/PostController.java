@@ -46,4 +46,9 @@ public class PostController {
     public ResponseEntity<MessageResponseDto> deletePost(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return postService.deletePost(id, userDetails.getUser());
     }
+
+    @PutMapping("/post/like/{id}")
+    public ResponseEntity<MessageResponseDto> likePost(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return postService.likePost(id, userDetails.getUser());
+    }
 }

@@ -3,11 +3,9 @@ package com.sparta.fishingload_backend.service;
 import com.sparta.fishingload_backend.dto.MessageResponseDto;
 import com.sparta.fishingload_backend.dto.PostRequestDto;
 import com.sparta.fishingload_backend.dto.PostResponseDto;
-import com.sparta.fishingload_backend.entity.Category;
-import com.sparta.fishingload_backend.entity.Post;
-import com.sparta.fishingload_backend.entity.User;
-import com.sparta.fishingload_backend.entity.UserRoleEnum;
+import com.sparta.fishingload_backend.entity.*;
 import com.sparta.fishingload_backend.repository.CategoryRepository;
+import com.sparta.fishingload_backend.repository.PostListRepository;
 import com.sparta.fishingload_backend.repository.PostRepository;
 import com.sparta.fishingload_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +25,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+    private final PostListRepository postListRepository;
 
     public PostResponseDto createPost(PostRequestDto requestDto, User user) {
         Post post = new Post(requestDto);
@@ -80,6 +79,30 @@ public class PostService {
         post.setPostUse(false);
 
         MessageResponseDto message = new MessageResponseDto("게시물 삭제를 성공했습니다.", HttpStatus.OK.value());
+        return ResponseEntity.status(HttpStatus.OK).body(message);
+    }
+
+    public ResponseEntity<MessageResponseDto> likePost(Long id, User user) {
+        Post post = findPost(id);
+        User userSelect = findUser(user.getUserid());
+        PostLike postLike = postListRepository.findByUser_IdAndPost_Id(userSelect.getId(), id);
+
+        if (postLike == null) {
+            postLike = postListRepository.save(new PostLike(user, post));
+            post.addPostLikeList(postLike);
+        }
+
+        MessageResponseDto message;
+        if (postLike.isCheck()) {
+            postLike.setCheck(false);
+            post.setPostLike(post.getPostLike() + 1);
+            message = new MessageResponseDto("게시물 좋아요를 성공했습니다.", HttpStatus.OK.value());
+            return ResponseEntity.status(HttpStatus.OK).body(message);
+        }
+
+        postLike.setCheck(true);
+        post.setPostLike(post.getPostLike() - 1);
+        message = new MessageResponseDto("게시물 좋아요를 취소했습니다.", HttpStatus.OK.value());
         return ResponseEntity.status(HttpStatus.OK).body(message);
     }
 
