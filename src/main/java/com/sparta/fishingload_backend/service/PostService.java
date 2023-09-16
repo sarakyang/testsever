@@ -9,7 +9,12 @@ import com.sparta.fishingload_backend.repository.CategoryRepository;
 import com.sparta.fishingload_backend.repository.PostRepository;
 import com.sparta.fishingload_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,8 +38,19 @@ public class PostService {
         return new PostResponseDto(post);
     }
 
+    @Transactional(readOnly = true)
+    public Page<PostResponseDto> getPosts(int page, int size, String sortBy, boolean isAsc) {
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<PostResponseDto> pageList = postRepository.findAllByPostUseTrue(pageable).map(PostResponseDto::new);
+
+        return pageList;
+    }
+
     private User findUser(String userId) {
-        return userRepository.findByUseridAndUserUseTrue(userId).orElseThrow(() ->
+        return userRepository.findByUseridAndAccountUseTrue(userId).orElseThrow(() ->
                 new NullPointerException("해당 유저는 존재하지 않습니다.")
         );
     }
