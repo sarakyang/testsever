@@ -29,12 +29,12 @@ public class PostService {
 
     public PostResponseDto createPost(PostRequestDto requestDto, User user) {
         Post post = new Post(requestDto);
-        post.setAccountId(user.getUserid());
+        post.setAccountId(user.getUserId());
 
         Category category = findCategory(requestDto.getCategoryId());
         category.addPostList(post);
 
-        User userSelect = findUser(user.getUserid());
+        User userSelect = findUser(user.getUserId());
         userSelect.addPostList(post);
         postRepository.save(post);
 
@@ -62,7 +62,7 @@ public class PostService {
     public PostResponseDto updatePost(Long id, PostRequestDto requestDto, User user) {
         Post post = findPost(id);
 
-        if (!user.getUserid().equals(post.getAccountId()) && user.getRole() != UserRoleEnum.ADMIN) {
+        if (!user.getUserId().equals(post.getAccountId()) && user.getRole() != UserRoleEnum.ADMIN) {
             throw new IllegalArgumentException("해당 게시물의 작성자만 수정할 수 있습니다.");
         }
         post.update(requestDto);
@@ -72,7 +72,7 @@ public class PostService {
     public ResponseEntity<MessageResponseDto> deletePost(Long id, User user) {
         Post post = findPost(id);
 
-        if (!user.getUserid().equals(post.getAccountId()) && user.getRole() != UserRoleEnum.ADMIN) {
+        if (!user.getUserId().equals(post.getAccountId()) && user.getRole() != UserRoleEnum.ADMIN) {
             throw new IllegalArgumentException("해당 게시물의 작성자만 삭제할 수 있습니다.");
         }
 
@@ -84,7 +84,7 @@ public class PostService {
 
     public ResponseEntity<MessageResponseDto> likePost(Long id, User user) {
         Post post = findPost(id);
-        User userSelect = findUser(user.getUserid());
+        User userSelect = findUser(user.getUserId());
         PostLike postLike = postListRepository.findByUser_IdAndPost_Id(userSelect.getId(), id);
 
         if (postLike == null) {
@@ -113,7 +113,7 @@ public class PostService {
     }
 
     private User findUser(String userId) {
-        return userRepository.findByUseridAndAccountUseTrue(userId).orElseThrow(() ->
+        return userRepository.findByUserIdAndAccountUseTrue(userId).orElseThrow(() ->
                 new NullPointerException("해당 유저는 존재하지 않습니다.")
         );
     }
