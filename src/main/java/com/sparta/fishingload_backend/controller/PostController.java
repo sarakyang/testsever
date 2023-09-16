@@ -29,4 +29,9 @@ public class PostController {
             @RequestParam("isAsc") boolean isAsc) {
         return postService.getPosts(page-1, size, sortBy, isAsc);
     }
+
+    @GetMapping("/post/{id}")
+    public PostResponseDto getPost(@PathVariable Long id) {
+        return postService.getPost(id);
+    }
 }

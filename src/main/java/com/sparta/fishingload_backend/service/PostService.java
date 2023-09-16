@@ -49,6 +49,19 @@ public class PostService {
         return pageList;
     }
 
+    public PostResponseDto getPost(Long id) {
+        Post post = findPost(id);
+        PostResponseDto responseDto = new PostResponseDto(post);
+
+        return responseDto;
+    }
+
+    private Post findPost(Long id) {
+        return postRepository.findByIdAndPostUseTrue(id).orElseThrow(() ->
+                new NullPointerException("선택한 게시물은 존재하지 않습니다.")
+        );
+    }
+
     private User findUser(String userId) {
         return userRepository.findByUseridAndAccountUseTrue(userId).orElseThrow(() ->
                 new NullPointerException("해당 유저는 존재하지 않습니다.")
@@ -60,4 +73,5 @@ public class PostService {
                 new NullPointerException("해당 카테고리는 존재하지 않습니다.")
         );
     }
+
 }
