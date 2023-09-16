@@ -1,5 +1,6 @@
 package com.sparta.fishingload_backend.service;
 
+import com.sparta.fishingload_backend.dto.MessageResponseDto;
 import com.sparta.fishingload_backend.dto.PostRequestDto;
 import com.sparta.fishingload_backend.dto.PostResponseDto;
 import com.sparta.fishingload_backend.entity.Category;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,6 +68,19 @@ public class PostService {
         }
         post.update(requestDto);
         return new PostResponseDto(post);
+    }
+
+    public ResponseEntity<MessageResponseDto> deletePost(Long id, User user) {
+        Post post = findPost(id);
+
+        if (!user.getUserid().equals(post.getAccountId()) && user.getRole() != UserRoleEnum.ADMIN) {
+            throw new IllegalArgumentException("해당 게시물의 작성자만 삭제할 수 있습니다.");
+        }
+
+        post.setPostUse(false);
+
+        MessageResponseDto message = new MessageResponseDto("게시물 삭제를 성공했습니다.", HttpStatus.OK.value());
+        return ResponseEntity.status(HttpStatus.OK).body(message);
     }
 
     private Post findPost(Long id) {

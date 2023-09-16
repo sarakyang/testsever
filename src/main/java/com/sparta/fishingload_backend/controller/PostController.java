@@ -1,11 +1,13 @@
 package com.sparta.fishingload_backend.controller;
 
+import com.sparta.fishingload_backend.dto.MessageResponseDto;
 import com.sparta.fishingload_backend.dto.PostRequestDto;
 import com.sparta.fishingload_backend.dto.PostResponseDto;
 import com.sparta.fishingload_backend.security.UserDetailsImpl;
 import com.sparta.fishingload_backend.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,5 +40,10 @@ public class PostController {
     @PutMapping("/post/{id}")
     public PostResponseDto updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return postService.updatePost(id, requestDto, userDetails.getUser());
+    }
+
+    @DeleteMapping("/post/{id}")
+    public ResponseEntity<MessageResponseDto> deletePost(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return postService.deletePost(id, userDetails.getUser());
     }
 }
