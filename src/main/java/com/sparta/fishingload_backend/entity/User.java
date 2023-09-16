@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -31,8 +34,12 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
-    @Column(name = "accountUse")
+    @Column(name = "account_Use")
     private boolean accountUse= true ;
+
+    @OneToMany
+    @JoinColumn(name = "user_id")
+    private List<Post> postList = new ArrayList<>();
 
     public User(String userid, String password, UserRoleEnum role, String email, String nickname) {
         this.userid = userid;
@@ -40,5 +47,9 @@ public class User {
         this.role = role;
         this.email = email;
         this.nickname = nickname;
+    }
+
+    public void addPostList(Post post) {
+        this.postList.add(post);
     }
 }
