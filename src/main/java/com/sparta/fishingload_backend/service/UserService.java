@@ -1,11 +1,11 @@
 package com.sparta.fishingload_backend.service;
 
-import com.sparta.fishingload_backend.dto.MessageResponseDto;
-import com.sparta.fishingload_backend.dto.SignupRequestDto;
+import com.sparta.fishingload_backend.dto.*;
 import com.sparta.fishingload_backend.entity.User;
 import com.sparta.fishingload_backend.entity.UserRoleEnum;
 import com.sparta.fishingload_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -52,6 +52,22 @@ public class UserService {
         return ResponseEntity.status(HttpStatus.OK).body(message);
     }
 
+    //아이디 찾기
+    public FindUserResponseDto findUser(FindRequestDto findRequestDto) {
+        String userId = UserIdFind(findRequestDto.getEmail()).getUserId();
+        FindUserResponseDto findUserResponseDto = new FindUserResponseDto(userId);
+        return findUserResponseDto;
+    }
+
+    //비밀번호 찾기
+    public FindPasswordResponseDto findPassword(FindRequestDto findRequestDto) {
+        String password = PasswordFind(findRequestDto.getEmail() , findRequestDto.getUserId()).getPassword();
+        FindPasswordResponseDto findPasswordResponseDto = new FindPasswordResponseDto(password);
+        return findPasswordResponseDto;
+    }
+
+
+
     // 회원 탈퇴
     @Transactional
     public ResponseEntity<MessageResponseDto> resign(User user) {
@@ -74,4 +90,15 @@ public class UserService {
         MessageResponseDto message = new MessageResponseDto("회원탈퇴가 성공했습니다.", HttpStatus.OK.value());
         return ResponseEntity.status(HttpStatus.OK).body(message);
     }
+
+    private User UserIdFind(String email) {
+        return userRepository.findByEmailAndAccountUseTrue(email).orElseThrow(
+                () -> new NullPointerException("해당 유저는 존재하지 않습니다."));
+    }
+
+    private User PasswordFind (String userId, String email) {
+        return userRepository.findByUserIdAndEmail(userId,email).orElseThrow(
+                () -> new NullPointerException("해당 비밀번호가 존재하지 않습니다. "));
+    }
+
 }
