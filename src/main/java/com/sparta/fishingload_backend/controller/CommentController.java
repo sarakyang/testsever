@@ -36,4 +36,9 @@ public class CommentController {
     public ResponseEntity<MessageResponseDto> likeComment(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return commentService.likeComment(id, userDetails.getUser());
     }
+
+    @PostMapping("/comment/comment/{id}")
+    public CommentResponseDto createCommentComment(@PathVariable Long id, @RequestBody CommentRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return commentService.createCommentComment(id, requestDto, userDetails.getUser());
+    }
 }

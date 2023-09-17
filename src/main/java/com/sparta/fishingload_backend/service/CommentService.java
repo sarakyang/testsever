@@ -90,6 +90,23 @@ public class CommentService {
         return ResponseEntity.status(HttpStatus.OK).body(message);
     }
 
+    public CommentResponseDto createCommentComment(Long commentId, CommentRequestDto requestDto, User user) {
+        String userId = user.getUserId();
+        User user_selcet = findUser(userId);
+
+        Comment commentSelect = findComment(commentId);
+
+        Comment comment = new Comment(requestDto);
+        comment.setAccountId(userId);
+
+        user_selcet.addCommentList(comment);
+        commentSelect.addCommentList(comment);
+
+        commentRepository.save(comment);
+
+        return new CommentResponseDto(commentSelect);
+    }
+
     private Comment findComment(Long id) {
         return commentRepository.findByIdAndCommentUseTrue(id).orElseThrow(() ->
                 new NullPointerException("선택한 댓글은 존재하지 않습니다.")
