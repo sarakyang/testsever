@@ -5,11 +5,13 @@ import com.sparta.fishingload_backend.dto.CommentResponseDto;
 import com.sparta.fishingload_backend.entity.Comment;
 import com.sparta.fishingload_backend.entity.Post;
 import com.sparta.fishingload_backend.entity.User;
+import com.sparta.fishingload_backend.entity.UserRoleEnum;
 import com.sparta.fishingload_backend.repository.CommentRepository;
 import com.sparta.fishingload_backend.repository.PostRepository;
 import com.sparta.fishingload_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -53,5 +55,16 @@ public class CommentService {
         return userRepository.findByUserIdAndAccountUseTrue(userId).orElseThrow(() ->
                 new NullPointerException("해당 유저는 존재하지 않습니다.")
         );
+    }
+
+    @Transactional
+    public CommentResponseDto updateComment(Long id, CommentRequestDto requestDto, User user) {
+        Comment comment = findComment(id);
+
+        if (!user.getUserId().equals(comment.getAccountId()) && user.getRole() != UserRoleEnum.ADMIN) {
+            throw new IllegalArgumentException("해당 댓글의 작성자만 수정할 수 있습니다.");
+        }
+        comment.update(requestDto);
+        return new CommentResponseDto(comment);
     }
 }
