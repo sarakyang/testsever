@@ -2,9 +2,11 @@ package com.sparta.fishingload_backend.controller;
 
 import com.sparta.fishingload_backend.dto.CommentRequestDto;
 import com.sparta.fishingload_backend.dto.CommentResponseDto;
+import com.sparta.fishingload_backend.dto.MessageResponseDto;
 import com.sparta.fishingload_backend.security.UserDetailsImpl;
 import com.sparta.fishingload_backend.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,5 +25,10 @@ public class CommentController {
     @PutMapping("/comment/{id}")
     public CommentResponseDto updateComment(@PathVariable Long id, @RequestBody CommentRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return commentService.updateComment(id, requestDto, userDetails.getUser());
+    }
+
+    @DeleteMapping("/comment/{id}")
+    public ResponseEntity<MessageResponseDto> deleteComment(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return commentService.deleteComment(id, userDetails.getUser());
     }
 }
