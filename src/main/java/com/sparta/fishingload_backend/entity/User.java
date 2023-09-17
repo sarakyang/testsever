@@ -42,6 +42,10 @@ public class User {
     @JoinColumn(name = "user_id")
     private List<Post> postList = new ArrayList<>();
 
+    @OneToMany
+    @JoinColumn(name = "user_id")
+    private List<Comment> commentList = new ArrayList<>();
+
     public User(String userId, String password, UserRoleEnum role, SignupRequestDto requestDto) {
         this.userId = userId;
         this.password = password;
@@ -52,5 +56,9 @@ public class User {
 
     public void addPostList(Post post) {
         this.postList.add(post);
+    }
+
+    public void addCommentList(Comment comment) {
+        this.commentList.add(comment);
     }
 }

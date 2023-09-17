@@ -46,6 +46,11 @@ public class Post extends Timestamped{
     @OneToMany(mappedBy = "post")
     private List<PostLike> postLikeList = new ArrayList<>();
 
+    @OneToMany
+    @JoinColumn(name = "post_id")
+    @OrderBy("createdTime desc")
+    private List<Comment> commentList = new ArrayList<>();
+
     public Post(PostRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
@@ -63,5 +68,9 @@ public class Post extends Timestamped{
     public void addPostLikeList(PostLike postLike) {
         this.postLikeList.add(postLike);
         postLike.setPost(this);
+    }
+
+    public void addCommentList(Comment comment) {
+        this.commentList.add(comment);
     }
 }
