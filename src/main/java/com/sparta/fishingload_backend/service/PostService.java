@@ -5,7 +5,7 @@ import com.sparta.fishingload_backend.dto.PostRequestDto;
 import com.sparta.fishingload_backend.dto.PostResponseDto;
 import com.sparta.fishingload_backend.entity.*;
 import com.sparta.fishingload_backend.repository.CategoryRepository;
-import com.sparta.fishingload_backend.repository.PostListRepository;
+import com.sparta.fishingload_backend.repository.PostLikeRepository;
 import com.sparta.fishingload_backend.repository.PostRepository;
 import com.sparta.fishingload_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
-    private final PostListRepository postListRepository;
+    private final PostLikeRepository postLikeRepository;
 
     public PostResponseDto createPost(PostRequestDto requestDto, User user) {
         Post post = new Post(requestDto);
@@ -85,10 +85,10 @@ public class PostService {
     public ResponseEntity<MessageResponseDto> likePost(Long id, User user) {
         Post post = findPost(id);
         User userSelect = findUser(user.getUserId());
-        PostLike postLike = postListRepository.findByUser_IdAndPost_Id(userSelect.getId(), id);
+        PostLike postLike = postLikeRepository.findByUser_IdAndPost_Id(userSelect.getId(), id);
 
         if (postLike == null) {
-            postLike = postListRepository.save(new PostLike(user, post));
+            postLike = postLikeRepository.save(new PostLike(user, post));
             post.addPostLikeList(postLike);
         }
 

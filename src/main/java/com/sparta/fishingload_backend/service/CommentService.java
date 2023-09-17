@@ -3,10 +3,8 @@ package com.sparta.fishingload_backend.service;
 import com.sparta.fishingload_backend.dto.CommentRequestDto;
 import com.sparta.fishingload_backend.dto.CommentResponseDto;
 import com.sparta.fishingload_backend.dto.MessageResponseDto;
-import com.sparta.fishingload_backend.entity.Comment;
-import com.sparta.fishingload_backend.entity.Post;
-import com.sparta.fishingload_backend.entity.User;
-import com.sparta.fishingload_backend.entity.UserRoleEnum;
+import com.sparta.fishingload_backend.entity.*;
+import com.sparta.fishingload_backend.repository.CommentLikeRepository;
 import com.sparta.fishingload_backend.repository.CommentRepository;
 import com.sparta.fishingload_backend.repository.PostRepository;
 import com.sparta.fishingload_backend.repository.UserRepository;
@@ -23,6 +21,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
+    private final CommentLikeRepository commentLikeRepository;
 
     public CommentResponseDto createComment(Long id, CommentRequestDto requestDto, User user) {
         Post post = findPost(id);
@@ -63,6 +62,31 @@ public class CommentService {
         comment.setCommentUse(false);
 
         MessageResponseDto message = new MessageResponseDto("게시물 삭제를 성공했습니다.", HttpStatus.OK.value());
+        return ResponseEntity.status(HttpStatus.OK).body(message);
+    }
+
+    @Transactional
+    public ResponseEntity<MessageResponseDto> likeComment(Long id, User user) {
+        Comment comment = findComment(id);
+        User userSelect = findUser(user.getUserId());
+        CommentLike commentLike = commentLikeRepository.findByUser_IdAndComment_Id(userSelect.getId(), id);
+
+        if (commentLike == null) {
+            commentLike = commentLikeRepository.save(new CommentLike(user, comment));
+            comment.addCommentLikeList(commentLike);
+        }
+
+        MessageResponseDto message;
+        if (commentLike.isCheck()) {
+            commentLike.setCheck(false);
+            comment.setCommentLike(comment.getCommentLike() + 1);
+            message = new MessageResponseDto("게시물 좋아요를 성공했습니다.", HttpStatus.OK.value());
+            return ResponseEntity.status(HttpStatus.OK).body(message);
+        }
+
+        commentLike.setCheck(true);
+        comment.setCommentLike(comment.getCommentLike() - 1);
+        message = new MessageResponseDto("게시물 좋아요를 취소했습니다.", HttpStatus.OK.value());
         return ResponseEntity.status(HttpStatus.OK).body(message);
     }
 
