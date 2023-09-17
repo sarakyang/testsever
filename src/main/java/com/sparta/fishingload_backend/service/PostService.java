@@ -48,13 +48,18 @@ public class PostService {
         Pageable pageable = PageRequest.of(page, size, sort);
 
         Page<PostResponseDto> pageList = postRepository.findAllByPostUseTrue(pageable).map(PostResponseDto::new);
+        for(PostResponseDto postResponseDto : pageList){
+            commentChange(postResponseDto);
+        }
 
         return pageList;
     }
 
+    @Transactional(readOnly = true)
     public PostResponseDto getPost(Long id) {
         Post post = findPost(id);
         PostResponseDto responseDto = new PostResponseDto(post);
+        commentChange(responseDto);
 
         return responseDto;
     }
@@ -77,6 +82,9 @@ public class PostService {
         }
 
         post.setPostUse(false);
+        for (Comment comment : post.getCommentList()) {
+            comment.setCommentUse(false);
+        }
 
         MessageResponseDto message = new MessageResponseDto("게시물 삭제를 성공했습니다.", HttpStatus.OK.value());
         return ResponseEntity.status(HttpStatus.OK).body(message);
@@ -122,5 +130,23 @@ public class PostService {
         return categoryRepository.findById(id).orElseThrow(() ->
                 new NullPointerException("해당 카테고리는 존재하지 않습니다.")
         );
+    }
+
+    private void commentChange(PostResponseDto postResponseDto) {
+        for (Comment comment : postResponseDto.getCommentList()) {
+            commentSetChange(comment);
+        }
+    }
+
+    private void commentSetChange(Comment comment) {
+        if (!comment.isCommentUse()) {
+            comment.setAccountId("알수없음");
+            comment.setComment("삭제된 댓글입니다.");
+        }
+        if (comment.getChildcommentList() != null) {
+            for (Comment comment1 : comment.getChildcommentList()) {
+                commentSetChange(comment1);
+            }
+        }
     }
 }

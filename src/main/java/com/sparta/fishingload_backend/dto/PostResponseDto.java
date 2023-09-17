@@ -1,11 +1,13 @@
 package com.sparta.fishingload_backend.dto;
 
 import com.sparta.fishingload_backend.entity.Category;
+import com.sparta.fishingload_backend.entity.Comment;
 import com.sparta.fishingload_backend.entity.Post;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,6 +22,7 @@ public class PostResponseDto {
     private String fishtype;
     private String locationdate;
     private Category category;
+    private List<Comment> commentList;
 
     public PostResponseDto(Post post) {
         this.id = post.getId();
@@ -32,5 +35,6 @@ public class PostResponseDto {
         this.fishtype = post.getFishtype();
         this.locationdate = post.getLocationdate();
         this.category = post.getCategory();
+        this.commentList = post.getCommentList();
     }
 }

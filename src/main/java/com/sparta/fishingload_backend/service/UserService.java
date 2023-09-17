@@ -2,6 +2,8 @@ package com.sparta.fishingload_backend.service;
 
 import com.sparta.fishingload_backend.dto.MessageResponseDto;
 import com.sparta.fishingload_backend.dto.SignupRequestDto;
+import com.sparta.fishingload_backend.entity.Comment;
+import com.sparta.fishingload_backend.entity.Post;
 import com.sparta.fishingload_backend.entity.User;
 import com.sparta.fishingload_backend.entity.UserRoleEnum;
 import com.sparta.fishingload_backend.repository.UserRepository;
@@ -57,18 +59,17 @@ public class UserService {
     public ResponseEntity<MessageResponseDto> resign(User user) {
         User userselect = userRepository.findByUserId(user.getUserId()).orElse(null);
 
-        // 현재 게시물과 댓글이 없기 때문에 주석 처리함 이후 사용할  예정
-//        // 회원이 작성한 게시물 삭제 처리
-//        for (Board board : userselect.getBoardList()) {
-//            board.setBoardUse(false);
-//            for (Comment comment : board.getCommentList()) {
-//                comment.setCommentUse(false);
-//            }
-//        }
-//        // 회원이 작성한 댓글 삭제 처리
-//        for (Comment comment : userselect.getCommentList()) {
-//            comment.setCommentUse(false);
-//        }
+        // 회원이 작성한 게시물 삭제 처리
+        for (Post post : userselect.getPostList()) {
+            post.setPostUse(false);
+            for (Comment comment : post.getCommentList()) {
+                comment.setCommentUse(false);
+            }
+        }
+        // 회원이 작성한 댓글 삭제 처리
+        for (Comment comment : userselect.getCommentList()) {
+            comment.setCommentUse(false);
+        }
         userselect.setAccountUse(false);
 
         MessageResponseDto message = new MessageResponseDto("회원탈퇴가 성공했습니다.", HttpStatus.OK.value());
