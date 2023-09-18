@@ -56,7 +56,7 @@ public class UserService {
     }
 
     //아이디 찾기
-    public FindUserResponseDto findUser(FindRequestDto findRequestDto) {
+    public FindUserResponseDto findUser(FindIdRequestDto findRequestDto) {
         String userId = UserIdFind(findRequestDto.getEmail()).getUserId();
         FindUserResponseDto findUserResponseDto = new FindUserResponseDto(userId);
         return findUserResponseDto;
@@ -70,7 +70,7 @@ public class UserService {
     }
 
     //중복확인
-    public ResponseEntity<MessageResponseDto> duplicate(FindRequestDto findRequestDto) {
+    public ResponseEntity<MessageResponseDto> duplicate(FindUserRequestDto findRequestDto) {
         Optional<User> user = userRepository.findByUserId(findRequestDto.getUserId());
         if(user.isEmpty()) {
             MessageResponseDto message = new MessageResponseDto("없는 userId 입니다. ", HttpStatus.OK.value());

@@ -1,6 +1,7 @@
 package com.sparta.fishingload_backend.entity;
 
 import com.sparta.fishingload_backend.dto.SignupRequestDto;
+import com.sparta.fishingload_backend.dto.UserUpdateRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -58,7 +59,7 @@ public class User {
         this.postList.add(post);
     }
 
-    public void update(String password, SignupRequestDto signupRequestDto) {
+    public void update(String password, UserUpdateRequestDto signupRequestDto) {
         this.userId = signupRequestDto.getUserId();
         this.password = password;
         this.email = signupRequestDto.getEmail();

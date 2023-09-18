@@ -35,12 +35,12 @@ public class AccountService {
     }
 
     //개인정보 수정
-    public AccountResponseDto UserUpdate(Long id, SignupRequestDto signupRequestDto, User user) {
+    public AccountResponseDto UserUpdate(Long id, UserUpdateRequestDto updateRequestDto, User user) {
         if (!(id.equals(user.getId()))&& user.getRole() == UserRoleEnum.ADMIN ) {
             throw new IllegalArgumentException("해당 유저만 수정할 수 있습니다.");
         }
-        String password = passwordEncoder.encode(signupRequestDto.getPassword());
-        user.update(password, signupRequestDto);
+        String password = passwordEncoder.encode(updateRequestDto.getPassword());
+        user.update(password, updateRequestDto);
         userRepository.save(user);
         return new AccountResponseDto(user);
     }
@@ -59,9 +59,9 @@ public class AccountService {
     }
 
     // 패스워드 체크
-    public ResponseEntity<MessageResponseDto> checkPassword(LoginRequestDto loginRequestDto, User user) {
+    public ResponseEntity<MessageResponseDto> checkPassword(CheckRequestDto checkRequestDto, User user) {
 
-        if (passwordEncoder.matches(loginRequestDto.getPassword(),user.getPassword())) {
+        if (passwordEncoder.matches(checkRequestDto.getPassword() ,user.getPassword())) {
             MessageResponseDto messageResponseDto = new MessageResponseDto("비밀번호가 일치합니다.", HttpStatus.OK.value());
             return ResponseEntity.status(HttpStatus.OK).body(messageResponseDto);
         }

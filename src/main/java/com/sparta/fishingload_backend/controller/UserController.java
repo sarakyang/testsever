@@ -26,7 +26,7 @@ public class UserController {
     // 더하여 민간함 전보의 경우 body에 담아 post 맵핑으로 가져오고 가져가는 것이 필요함
     //아이디 찾기
     @PostMapping("/user/findID")
-    public FindUserResponseDto findUser (@RequestBody FindRequestDto findRequestDto) {
+    public FindUserResponseDto findUser (@RequestBody FindIdRequestDto findRequestDto) {
         return userService.findUser(findRequestDto);
     }
 
@@ -37,7 +37,7 @@ public class UserController {
     }
 
     @PostMapping("/user/userIdCheck")
-    public ResponseEntity<MessageResponseDto> duplicate (@RequestBody FindRequestDto findRequestDto) {
+    public ResponseEntity<MessageResponseDto> duplicate (@RequestBody FindUserRequestDto findRequestDto) {
         return userService.duplicate(findRequestDto);
     }
 }

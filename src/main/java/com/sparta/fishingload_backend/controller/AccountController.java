@@ -24,9 +24,9 @@ public class AccountController {
 
     //개인정보 수정
     @PutMapping("/account/{id}")
-    public AccountResponseDto UserUpdate (@PathVariable Long id , @RequestBody SignupRequestDto signupRequestDto,
+    public AccountResponseDto UserUpdate (@PathVariable Long id , @RequestBody UserUpdateRequestDto updateRequestDto,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return accountService.UserUpdate(id, signupRequestDto, userDetails.getUser());
+        return accountService.UserUpdate(id, updateRequestDto, userDetails.getUser());
     }
 
     //My Page 회원이 작성한 게시글 (차후 +댓글 )
@@ -42,9 +42,9 @@ public class AccountController {
     //비밀번호 체크
     //로그인 이후에 확인하는 것 같아서 account에 있음
     @PostMapping("/account/checkpw")
-    public ResponseEntity<MessageResponseDto> checkPassword (@RequestBody LoginRequestDto loginRequestDto,
+    public ResponseEntity<MessageResponseDto> checkPassword (@RequestBody CheckRequestDto checkRequestDto,
                                                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return accountService.checkPassword(loginRequestDto,userDetails.getUser());
+        return accountService.checkPassword(checkRequestDto,userDetails.getUser());
     }
 
     //회원 탈퇴
