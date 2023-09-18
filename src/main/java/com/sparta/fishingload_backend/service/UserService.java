@@ -6,13 +6,11 @@ import com.sparta.fishingload_backend.entity.User;
 import com.sparta.fishingload_backend.entity.UserRoleEnum;
 import com.sparta.fishingload_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Optional;
 
 @Service
@@ -67,29 +65,15 @@ public class UserService {
         return findPasswordResponseDto;
     }
 
-
-
-    // 회원 탈퇴
-    @Transactional
-    public ResponseEntity<MessageResponseDto> resign(User user) {
-        User userselect = userRepository.findByUserId(user.getUserId()).orElse(null);
-
-//         현재 게시물과 댓글이 없기 때문에 주석 처리함 이후 사용할  예정
-        // 회원이 작성한 게시물 삭제 처리
-        for (Post board : userselect.getPostList()) {
-            board.setPostUse(false);
-//            for (Comment comment : board.getCommentList()) {
-//                comment.setCommentUse(false);
-//            }
+    //중복확인
+    public ResponseEntity<MessageResponseDto> duplicate(FindRequestDto findRequestDto) {
+        Optional<User> user = userRepository.findByUserId(findRequestDto.getUserId());
+        if(user.isEmpty()) {
+            MessageResponseDto message = new MessageResponseDto("없는 userId 입니다. ", HttpStatus.OK.value());
+            return ResponseEntity.status(HttpStatus.OK).body((message));
         }
-//        // 회원이 작성한 댓글 삭제 처리
-//        for (Comment comment : userselect.getCommentList()) {
-//            comment.setCommentUse(false);
-//        }
-        userselect.setAccountUse(false);
-
-        MessageResponseDto message = new MessageResponseDto("회원탈퇴가 성공했습니다.", HttpStatus.OK.value());
-        return ResponseEntity.status(HttpStatus.OK).body(message);
+        MessageResponseDto message = new MessageResponseDto("해당 userId가 이미 존재합니다. ", HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status((HttpStatus.BAD_REQUEST)).body((message));
     }
 
     private User UserIdFind(String email) {

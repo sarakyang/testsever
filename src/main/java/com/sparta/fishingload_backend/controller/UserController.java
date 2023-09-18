@@ -4,7 +4,7 @@ import com.sparta.fishingload_backend.dto.*;
 import com.sparta.fishingload_backend.security.UserDetailsImpl;
 import com.sparta.fishingload_backend.security.ValidationGroups;
 import com.sparta.fishingload_backend.service.UserService;
-import lombok.Getter;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -33,9 +33,8 @@ public class UserController {
         return userService.findPassword(findRequestDto);
     }
 
-    @DeleteMapping("/user/resign")
-    public ResponseEntity<MessageResponseDto> resign(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return userService.resign(userDetails.getUser());
+    @PostMapping("/user/userIdCheck")
+    public ResponseEntity<MessageResponseDto> duplicate (@RequestBody FindRequestDto findRequestDto) {
+        return userService.duplicate(findRequestDto);
     }
-
 }
