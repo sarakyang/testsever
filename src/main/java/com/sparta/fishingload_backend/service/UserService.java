@@ -80,18 +80,6 @@ public class UserService {
         return ResponseEntity.status((HttpStatus.BAD_REQUEST)).body((message));
     }
 
-        // 회원이 작성한 게시물 삭제 처리
-        for (Post post : userselect.getPostList()) {
-            post.setPostUse(false);
-            for (Comment comment : post.getCommentList()) {
-                comment.setCommentUse(false);
-            }
-        }
-        // 회원이 작성한 댓글 삭제 처리
-        for (Comment comment : userselect.getCommentList()) {
-            comment.setCommentUse(false);
-        }
-        userselect.setAccountUse(false);
     private User UserIdFind(String email) {
         return userRepository.findByEmailAndAccountUseTrue(email).orElseThrow(
                 () -> new NullPointerException("해당 유저는 존재하지 않습니다."));

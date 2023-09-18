@@ -57,7 +57,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
 
         String accessToken = jwtUtil.createAccessToken(userId, role);
-        jwtUtil.addJwtToCookie(accessToken, response);
+        response.addHeader("Authorization", accessToken);
 
         RefreshToken refreshToken = refreshTokenRepository.findByUserId(userId).orElse(null);
         String refresh = jwtUtil.createRefreshToken(userId, role);
@@ -67,7 +67,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             refreshToken.updateToken(refresh);
         }
         refreshTokenRepository.save(refreshToken);
-        response.addHeader("Refresh_Token", refreshToken.getToken());
+        response.addHeader("Authorization_Refresh", refreshToken.getToken());
 
         response.setContentType("application/json; charset=UTF-8");
         MessageResponseDto message = new MessageResponseDto("로그인 성공했습니다.", HttpStatus.OK.value());

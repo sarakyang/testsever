@@ -132,7 +132,7 @@ public class PostService {
         );
     }
 
-    private void commentChange(PostResponseDto postResponseDto) {
+    public void commentChange(PostResponseDto postResponseDto) {
         for (Comment comment : postResponseDto.getCommentList()) {
             commentSetChange(comment);
         }

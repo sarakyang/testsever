@@ -20,22 +20,21 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @RequiredArgsConstructor
-public class JwtAuthorizationFilter extends OncePerRequestFilter {
+    public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
-    private final JwtUtil jwtUtil;
-    private final UserDetailsServiceImpl userDetailsService;
-    private final RefreshTokenRepository refreshTokenRepository;
+        private final JwtUtil jwtUtil;
+        private final UserDetailsServiceImpl userDetailsService;
+        private final RefreshTokenRepository refreshTokenRepository;
 
-    // 필터 검증
-    @Override
+        // 필터 검증
+        @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String accessToken = jwtUtil.getTokenFromRequest(request);
-        String refreshToken = jwtUtil.getJwtFromHeader(request);
+        String accessToken = jwtUtil.getJwtFromHeader(request, "Authorization");
+        String refreshToken = jwtUtil.getJwtFromHeader(request, "Authorization_Refresh");
 
         // 토큰이 null인지, 길이가 0인지, 공백이 포함 되어 있는지 확인
         if (StringUtils.hasText(accessToken)) {
 
-            accessToken = jwtUtil.substringToken(accessToken);
             if (!jwtUtil.validateToken(accessToken)) {
                 if (!jwtUtil.validateToken(refreshToken)) {
                     throw new IllegalArgumentException("유효하지 않는 토큰입니다.");
@@ -53,7 +52,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             UserRoleEnum role = UserRoleEnum.valueOf(String.valueOf(info.get("auth")));
 
             accessToken = jwtUtil.createAccessToken(username, role);
-            jwtUtil.addJwtToCookie(accessToken, response);
+            response.addHeader("Authorization", accessToken);
             accessToken = jwtUtil.substringToken(accessToken);
 
             info = jwtUtil.getUserInfoFromToken(accessToken);

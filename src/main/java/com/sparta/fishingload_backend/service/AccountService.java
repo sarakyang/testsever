@@ -1,6 +1,7 @@
 package com.sparta.fishingload_backend.service;
 
 import com.sparta.fishingload_backend.dto.*;
+import com.sparta.fishingload_backend.entity.Comment;
 import com.sparta.fishingload_backend.entity.Post;
 import com.sparta.fishingload_backend.entity.User;
 import com.sparta.fishingload_backend.entity.UserRoleEnum;
@@ -25,6 +26,7 @@ public class AccountService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final PostRepository postRepository;
+    private final PostService postService;
 
     //개인 정보
     public AccountResponseDto MyInfo(User user) {
@@ -43,18 +45,20 @@ public class AccountService {
         return new AccountResponseDto(user);
     }
 
-    //마이페이지
-    @Transactional(readOnly = true)
+    //마이페이지 -> 자신이 쓴 글
     public Page<PostResponseDto> mypage(User user, int page, int size, String sortBy, boolean isAsc) {
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sort = Sort.by(direction, sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        Page<PostResponseDto> pageList = postRepository.findAllByPostUseTrueAndAccountId(pageable, user.getId().toString()).map(PostResponseDto::new);
-
+        Page<PostResponseDto> pageList = postRepository.findAllByPostUseTrueAndAccountId(pageable, user.getUserId()).map(PostResponseDto::new);
+        for(PostResponseDto postResponseDto : pageList){
+            postService.commentChange(postResponseDto);
+        }
         return pageList;
     }
 
+    // 패스워드 체크
     public ResponseEntity<MessageResponseDto> checkPassword(LoginRequestDto loginRequestDto, User user) {
 
         if (passwordEncoder.matches(loginRequestDto.getPassword(),user.getPassword())) {
@@ -74,14 +78,14 @@ public class AccountService {
         // 회원이 작성한 게시물 삭제 처리
         for (Post board : userselect.getPostList()) {
             board.setPostUse(false);
-//            for (Comment comment : board.getCommentList()) {
-//                comment.setCommentUse(false);
-//            }
+            for (Comment comment : board.getCommentList()) {
+                comment.setCommentUse(false);
+            }
         }
-//        // 회원이 작성한 댓글 삭제 처리
-//        for (Comment comment : userselect.getCommentList()) {
-//            comment.setCommentUse(false);
-//        }
+//         회원이 작성한 댓글 삭제 처리
+        for (Comment comment : userselect.getCommentList()) {
+            comment.setCommentUse(false);
+        }
         userselect.setAccountUse(false);
 
         MessageResponseDto message = new MessageResponseDto("회원탈퇴가 성공했습니다.", HttpStatus.OK.value());

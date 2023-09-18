@@ -32,10 +32,10 @@ public class AccountController {
     //My Page 회원이 작성한 게시글 (차후 +댓글 )
     @GetMapping("/account/mypage")
     public Page<PostResponseDto> getMyPage(@AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestParam("page") int page,
-            @RequestParam("size") int size,
-            @RequestParam("sortBy") String sortBy,
-            @RequestParam("isAsc") boolean isAsc) {
+                                           @RequestParam("page") int page,
+                                           @RequestParam("size") int size,
+                                           @RequestParam("sortBy") String sortBy,
+                                           @RequestParam("isAsc") boolean isAsc) {
         return accountService.mypage(userDetails.getUser() ,page-1, size, sortBy, isAsc);
     }
 
