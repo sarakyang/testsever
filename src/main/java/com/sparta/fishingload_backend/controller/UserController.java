@@ -22,13 +22,16 @@ public class UserController {
                                                          @RequestBody SignupRequestDto requestDto) {
         return userService.signup(requestDto);
     }
-
-    @GetMapping("/user/findID")
+    // GET 요청 표준에 따라 GET 방식에 Body를 넣어 전송하는 방식은 피해야함
+    // 더하여 민간함 전보의 경우 body에 담아 post 맵핑으로 가져오고 가져가는 것이 필요함
+    //아이디 찾기
+    @PostMapping("/user/findID")
     public FindUserResponseDto findUser (@RequestBody FindRequestDto findRequestDto) {
         return userService.findUser(findRequestDto);
     }
 
-    @GetMapping("/user/findPW")
+    //패스워드 찾기
+    @PostMapping("/user/findPW")
     public FindPasswordResponseDto findPassword (@RequestBody FindRequestDto findRequestDto) {
         return userService.findPassword(findRequestDto);
     }
