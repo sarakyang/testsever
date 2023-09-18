@@ -1,5 +1,6 @@
 package com.sparta.fishingload_backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.fishingload_backend.dto.SignupRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -22,6 +23,7 @@ public class User {
     @Column(name = "userid", nullable = false, unique = true)
     private String userId;
 
+    @JsonIgnore
     @Column(name = "password", nullable = false)
     private String password;
 
@@ -31,14 +33,16 @@ public class User {
     @Column(name = "nickname", nullable = false, unique = true)
     private String nickname;
 
+    @JsonIgnore
     @Column(name = "account_use")
     private boolean accountUse = true;
 
+    @JsonIgnore
     @Column(name = "admin", nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private List<Post> postList = new ArrayList<>();
 
@@ -56,6 +60,13 @@ public class User {
 
     public void addPostList(Post post) {
         this.postList.add(post);
+    }
+
+    public void update(String password, SignupRequestDto signupRequestDto) {
+        this.userId = signupRequestDto.getUserId();
+        this.password = password;
+        this.email = signupRequestDto.getEmail();
+        this.nickname = signupRequestDto.getNickname();
     }
 
     public void addCommentList(Comment comment) {

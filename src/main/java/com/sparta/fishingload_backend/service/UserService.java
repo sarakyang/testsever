@@ -1,5 +1,7 @@
 package com.sparta.fishingload_backend.service;
 
+import com.sparta.fishingload_backend.dto.*;
+import com.sparta.fishingload_backend.entity.Post;
 import com.sparta.fishingload_backend.dto.MessageResponseDto;
 import com.sparta.fishingload_backend.dto.SignupRequestDto;
 import com.sparta.fishingload_backend.entity.Comment;
@@ -13,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Optional;
 
 @Service
@@ -54,10 +55,30 @@ public class UserService {
         return ResponseEntity.status(HttpStatus.OK).body(message);
     }
 
-    // 회원 탈퇴
-    @Transactional
-    public ResponseEntity<MessageResponseDto> resign(User user) {
-        User userselect = userRepository.findByUserId(user.getUserId()).orElse(null);
+    //아이디 찾기
+    public FindUserResponseDto findUser(FindRequestDto findRequestDto) {
+        String userId = UserIdFind(findRequestDto.getEmail()).getUserId();
+        FindUserResponseDto findUserResponseDto = new FindUserResponseDto(userId);
+        return findUserResponseDto;
+    }
+
+    //비밀번호 찾기
+    public FindPasswordResponseDto findPassword(FindRequestDto findRequestDto) {
+        String password = PasswordFind(findRequestDto.getEmail() , findRequestDto.getUserId()).getPassword();
+        FindPasswordResponseDto findPasswordResponseDto = new FindPasswordResponseDto(password);
+        return findPasswordResponseDto;
+    }
+
+    //중복확인
+    public ResponseEntity<MessageResponseDto> duplicate(FindRequestDto findRequestDto) {
+        Optional<User> user = userRepository.findByUserId(findRequestDto.getUserId());
+        if(user.isEmpty()) {
+            MessageResponseDto message = new MessageResponseDto("없는 userId 입니다. ", HttpStatus.OK.value());
+            return ResponseEntity.status(HttpStatus.OK).body((message));
+        }
+        MessageResponseDto message = new MessageResponseDto("해당 userId가 이미 존재합니다. ", HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status((HttpStatus.BAD_REQUEST)).body((message));
+    }
 
         // 회원이 작성한 게시물 삭제 처리
         for (Post post : userselect.getPostList()) {
@@ -71,8 +92,14 @@ public class UserService {
             comment.setCommentUse(false);
         }
         userselect.setAccountUse(false);
-
-        MessageResponseDto message = new MessageResponseDto("회원탈퇴가 성공했습니다.", HttpStatus.OK.value());
-        return ResponseEntity.status(HttpStatus.OK).body(message);
+    private User UserIdFind(String email) {
+        return userRepository.findByEmailAndAccountUseTrue(email).orElseThrow(
+                () -> new NullPointerException("해당 유저는 존재하지 않습니다."));
     }
+
+    private User PasswordFind (String userId, String email) {
+        return userRepository.findByUserIdAndEmail(userId,email).orElseThrow(
+                () -> new NullPointerException("해당 비밀번호가 존재하지 않습니다. "));
+    }
+
 }
