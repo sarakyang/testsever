@@ -1,5 +1,6 @@
 package com.sparta.fishingload_backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.fishingload_backend.dto.PostRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -43,6 +44,7 @@ public class Post extends Timestamped{
     @ManyToOne
     private Category category;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "post")
     private List<PostLike> postLikeList = new ArrayList<>();
 
