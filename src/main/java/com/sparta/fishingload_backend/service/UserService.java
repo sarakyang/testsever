@@ -1,11 +1,6 @@
 package com.sparta.fishingload_backend.service;
 
 import com.sparta.fishingload_backend.dto.*;
-import com.sparta.fishingload_backend.entity.Post;
-import com.sparta.fishingload_backend.dto.MessageResponseDto;
-import com.sparta.fishingload_backend.dto.SignupRequestDto;
-import com.sparta.fishingload_backend.entity.Comment;
-import com.sparta.fishingload_backend.entity.Post;
 import com.sparta.fishingload_backend.entity.User;
 import com.sparta.fishingload_backend.entity.UserRoleEnum;
 import com.sparta.fishingload_backend.repository.UserRepository;
@@ -14,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Optional;
 
 @Service
@@ -64,7 +59,7 @@ public class UserService {
 
     //비밀번호 찾기
     public FindPasswordResponseDto findPassword(FindRequestDto findRequestDto) {
-        String password = PasswordFind(findRequestDto.getEmail() , findRequestDto.getUserId()).getPassword();
+        String password = PasswordFind(findRequestDto.getUserId(), findRequestDto.getEmail()).getPassword();
         FindPasswordResponseDto findPasswordResponseDto = new FindPasswordResponseDto(password);
         return findPasswordResponseDto;
     }

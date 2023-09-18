@@ -1,15 +1,15 @@
 package com.sparta.fishingload_backend.controller;
 
 import com.sparta.fishingload_backend.dto.*;
-import com.sparta.fishingload_backend.security.UserDetailsImpl;
 import com.sparta.fishingload_backend.security.ValidationGroups;
 import com.sparta.fishingload_backend.service.UserService;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api")

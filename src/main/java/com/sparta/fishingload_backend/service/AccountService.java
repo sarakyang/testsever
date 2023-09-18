@@ -30,7 +30,9 @@ public class AccountService {
 
     //개인 정보
     public AccountResponseDto MyInfo(User user) {
-        AccountResponseDto accountResponseDto = new AccountResponseDto(user);
+        User userSelect = userRepository.findById(user.getId()).orElseThrow(() ->
+                new NullPointerException("유저 정보가 없습니다."));
+        AccountResponseDto accountResponseDto = new AccountResponseDto(userSelect);
         return accountResponseDto;
     }
 
