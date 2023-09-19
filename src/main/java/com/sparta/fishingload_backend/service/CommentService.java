@@ -23,8 +23,8 @@ public class CommentService {
     private final PostRepository postRepository;
     private final CommentLikeRepository commentLikeRepository;
 
-    public CommentResponseDto createComment(Long id, CommentRequestDto requestDto, User user) {
-        Post post = findPost(id);
+    public CommentResponseDto createComment(CommentRequestDto requestDto, User user) {
+        Post post = findPost(requestDto.getPostId());
 
         String userid = user.getUserId();
         User user_selcet = findUser(userid);
@@ -104,7 +104,7 @@ public class CommentService {
 
         commentRepository.save(comment);
 
-        return new CommentResponseDto(commentSelect);
+        return new CommentResponseDto(comment);
     }
 
     private Comment findComment(Long id) {
