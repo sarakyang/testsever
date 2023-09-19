@@ -1,6 +1,7 @@
 package com.sparta.fishingload_backend.config;
 
 
+import com.sparta.fishingload_backend.security.JwtUtil;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
@@ -17,11 +18,11 @@ import java.util.List;
 @Configuration
 @SecurityScheme(
         type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.HEADER,
-        name = "Authorization", description = "Auth Token"
+        name = JwtUtil.AUTHORIZATION_HEADER, description = "Auth Token"
 )
 @SecurityScheme(
         type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.HEADER,
-        name = "Authorization_Refresh", description = "Auth Refresh Token"
+        name = JwtUtil.REFRESH_HEADER, description = "Auth Refresh Token"
 )
 public class SwaggerConfig {
 
@@ -36,8 +37,8 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI springShopOpenAPI() {
         List<SecurityRequirement> securityRequirementList = new ArrayList<>();
-        securityRequirementList.add(new SecurityRequirement().addList("Authorization"));
-        securityRequirementList.add(new SecurityRequirement().addList("Authorization_Refresh"));
+        securityRequirementList.add(new SecurityRequirement().addList(JwtUtil.AUTHORIZATION_HEADER));
+        securityRequirementList.add(new SecurityRequirement().addList(JwtUtil.REFRESH_HEADER));
 
         return new OpenAPI()
                 .info(new Info().title("FishingLoad API")

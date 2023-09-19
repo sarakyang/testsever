@@ -107,7 +107,7 @@ public class UserService {
         UserRoleEnum role = user.getRole();
 
         String accessToken = jwtUtil.createAccessToken(userId, role);
-        res.addHeader("Authorization", accessToken);
+        res.addHeader(JwtUtil.AUTHORIZATION_HEADER, accessToken);
 
         RefreshToken refreshToken = refreshTokenRepository.findByUserId(userId).orElse(null);
         String refresh = jwtUtil.createRefreshToken(userId, role);
@@ -117,7 +117,7 @@ public class UserService {
             refreshToken.updateToken(refresh);
         }
         refreshTokenRepository.save(refreshToken);
-        res.addHeader("Authorization_Refresh", refreshToken.getToken());
+        res.addHeader(JwtUtil.REFRESH_HEADER, refreshToken.getToken());
 
         MessageResponseDto message = new MessageResponseDto("로그인 성공했습니다.", HttpStatus.OK.value());
         return ResponseEntity.status(HttpStatus.OK).body(message);
