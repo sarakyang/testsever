@@ -1,6 +1,7 @@
 package com.sparta.fishingload_backend.controller;
 
 import com.sparta.fishingload_backend.dto.MessageResponseDto;
+import com.sparta.fishingload_backend.dto.PostListResponseDto;
 import com.sparta.fishingload_backend.dto.PostRequestDto;
 import com.sparta.fishingload_backend.dto.PostResponseDto;
 import com.sparta.fishingload_backend.security.UserDetailsImpl;
@@ -50,5 +51,10 @@ public class PostController {
     @PutMapping("/post/like/{id}")
     public ResponseEntity<MessageResponseDto> likePost(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return postService.likePost(id, userDetails.getUser());
+    }
+
+    @GetMapping("/post/category/{id}")
+    public PostListResponseDto getCategoryPost(@PathVariable Long id) {
+        return postService.getCategoryPost(id);
     }
 }

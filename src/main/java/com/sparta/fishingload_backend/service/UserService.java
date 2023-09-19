@@ -1,12 +1,17 @@
 package com.sparta.fishingload_backend.service;
 
 import com.sparta.fishingload_backend.dto.*;
+import com.sparta.fishingload_backend.entity.RefreshToken;
 import com.sparta.fishingload_backend.entity.User;
 import com.sparta.fishingload_backend.entity.UserRoleEnum;
+import com.sparta.fishingload_backend.repository.RefreshTokenRepository;
 import com.sparta.fishingload_backend.repository.UserRepository;
 import com.sparta.fishingload_backend.security.JwtUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
+import com.sparta.fishingload_backend.security.JwtUtil;
+import com.sparta.fishingload_backend.security.UserDetailsImpl;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,6 +28,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final JwtUtil jwtUtil;
 
     // ADMIN_TOKEN
@@ -118,4 +124,34 @@ public class UserService {
                 () -> new NullPointerException("해당 유저는 없는 유저입니다.  "));
     }
 
+    // 스웨거용 로그인
+    public ResponseEntity<MessageResponseDto> signin(LoginRequestDto requestDto, HttpServletResponse res) {
+        String userId = requestDto.getUserId();
+        String password = requestDto.getPassword();
+
+        User user = userRepository.findByUserId(userId).orElseThrow(() ->
+                new NullPointerException("해당 유저는 없는 유저입니다."));
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new IllegalArgumentException("비빌먼호가 일치하지 않습니다.");
+        }
+
+        UserRoleEnum role = user.getRole();
+
+        String accessToken = jwtUtil.createAccessToken(userId, role);
+        res.addHeader(JwtUtil.AUTHORIZATION_HEADER, accessToken);
+
+        RefreshToken refreshToken = refreshTokenRepository.findByUserId(userId).orElse(null);
+        String refresh = jwtUtil.createRefreshToken(userId, role);
+        if (refreshToken == null) {
+            refreshToken = new RefreshToken(refresh, userId);
+        } else {
+            refreshToken.updateToken(refresh);
+        }
+        refreshTokenRepository.save(refreshToken);
+        res.addHeader(JwtUtil.REFRESH_HEADER, refreshToken.getToken());
+
+        MessageResponseDto message = new MessageResponseDto("로그인 성공했습니다.", HttpStatus.OK.value());
+        return ResponseEntity.status(HttpStatus.OK).body(message);
+    }
 }

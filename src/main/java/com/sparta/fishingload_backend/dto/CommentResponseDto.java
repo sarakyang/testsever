@@ -1,9 +1,11 @@
 package com.sparta.fishingload_backend.dto;
 
 import com.sparta.fishingload_backend.entity.Comment;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+@Getter
 public class CommentResponseDto {
     private Long id;
     private String comment;

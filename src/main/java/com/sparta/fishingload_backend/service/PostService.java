@@ -1,6 +1,7 @@
 package com.sparta.fishingload_backend.service;
 
 import com.sparta.fishingload_backend.dto.MessageResponseDto;
+import com.sparta.fishingload_backend.dto.PostListResponseDto;
 import com.sparta.fishingload_backend.dto.PostRequestDto;
 import com.sparta.fishingload_backend.dto.PostResponseDto;
 import com.sparta.fishingload_backend.entity.*;
@@ -17,6 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -114,6 +117,16 @@ public class PostService {
         return ResponseEntity.status(HttpStatus.OK).body(message);
     }
 
+    @Transactional(readOnly = true)
+    public PostListResponseDto getCategoryPost(Long id) {
+        PostListResponseDto responseDto = new PostListResponseDto();
+        List<PostResponseDto> list = postRepository.findAllByCategoryAndPostUseTrue(findCategory(id)).stream().map(PostResponseDto::new).toList();
+        for(PostResponseDto postResponseDto : list){
+            responseDto.setPost(postResponseDto);
+        }
+        return responseDto;
+    }
+
     private Post findPost(Long id) {
         return postRepository.findByIdAndPostUseTrue(id).orElseThrow(() ->
                 new NullPointerException("선택한 게시물은 존재하지 않습니다.")
@@ -149,4 +162,5 @@ public class PostService {
             }
         }
     }
+
 }

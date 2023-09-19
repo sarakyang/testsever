@@ -26,11 +26,15 @@ import java.io.IOException;
         private final UserDetailsServiceImpl userDetailsService;
         private final RefreshTokenRepository refreshTokenRepository;
 
-        // 필터 검증
-        @Override
+    // 필터 검증
+    @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String accessToken = jwtUtil.getJwtFromHeader(request, "Authorization");
-        String refreshToken = jwtUtil.getJwtFromHeader(request, "Authorization_Refresh");
+        String accessToken = jwtUtil.getJwtFromHeader(request, JwtUtil.AUTHORIZATION_HEADER);
+        String refreshToken = jwtUtil.getJwtFromHeader(request, JwtUtil.REFRESH_HEADER);
+
+        if (request.getRequestURI().equals("/user/login") || request.getRequestURI().equals("/user/signup")) {
+            filterChain.doFilter(request, response);
+        }
 
         // 토큰이 null인지, 길이가 0인지, 공백이 포함 되어 있는지 확인
         if (StringUtils.hasText(accessToken)) {
@@ -52,7 +56,7 @@ import java.io.IOException;
             UserRoleEnum role = UserRoleEnum.valueOf(String.valueOf(info.get("auth")));
 
             accessToken = jwtUtil.createAccessToken(username, role);
-            response.addHeader("Authorization", accessToken);
+            response.addHeader(JwtUtil.AUTHORIZATION_HEADER, accessToken);
             accessToken = jwtUtil.substringToken(accessToken);
 
             info = jwtUtil.getUserInfoFromToken(accessToken);
