@@ -3,13 +3,11 @@ package com.sparta.fishingload_backend.controller;
 import com.sparta.fishingload_backend.dto.*;
 import com.sparta.fishingload_backend.security.ValidationGroups;
 import com.sparta.fishingload_backend.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
@@ -32,12 +30,18 @@ public class UserController {
 
     //패스워드 찾기
     @PostMapping("/user/findPW")
-    public FindPasswordResponseDto findPassword (@RequestBody FindRequestDto findRequestDto) {
+    public ResponseEntity<MessageResponseDto> findPassword (@RequestBody FindRequestDto findRequestDto) {
         return userService.findPassword(findRequestDto);
     }
 
     @PostMapping("/user/userIdCheck")
     public ResponseEntity<MessageResponseDto> duplicate (@RequestBody FindUserRequestDto findRequestDto) {
         return userService.duplicate(findRequestDto);
+    }
+
+    @PutMapping("/user/change")
+    public ResponseEntity<MessageResponseDto> changePassword(HttpServletRequest request
+            , @RequestBody ChangPasswordRequestDto changPasswordRequestDto){
+        return userService.changePassword(request ,changPasswordRequestDto);
     }
 }

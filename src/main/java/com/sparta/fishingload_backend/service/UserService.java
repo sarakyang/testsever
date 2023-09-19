@@ -4,11 +4,16 @@ import com.sparta.fishingload_backend.dto.*;
 import com.sparta.fishingload_backend.entity.User;
 import com.sparta.fishingload_backend.entity.UserRoleEnum;
 import com.sparta.fishingload_backend.repository.UserRepository;
+import com.sparta.fishingload_backend.security.JwtUtil;
+
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 
 import java.util.Optional;
 
@@ -18,6 +23,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     // ADMIN_TOKEN
     private final String ADMIN_TOKEN = "A1234";
@@ -58,11 +64,37 @@ public class UserService {
     }
 
     //비밀번호 찾기
-    public FindPasswordResponseDto findPassword(FindRequestDto findRequestDto) {
-        String password = PasswordFind(findRequestDto.getUserId(), findRequestDto.getEmail()).getPassword();
-        FindPasswordResponseDto findPasswordResponseDto = new FindPasswordResponseDto(password);
-        return findPasswordResponseDto;
+    public ResponseEntity<MessageResponseDto> findPassword(FindRequestDto findRequestDto) {
+        String token = jwtUtil.createTemporaryAuthorization(findRequestDto.getUserId() ,findRequestDto.getEmail() );
+
+        //헤더에 담기
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("temporary_Authorization" , "Bearer " + token);
+        //메세지
+        MessageResponseDto messageResponseDto = new MessageResponseDto("새로운 비밀번호를 설정합니다. ", HttpStatus.OK.value());
+        return ResponseEntity.status(HttpStatus.OK).headers(headers).body((messageResponseDto));
     }
+
+    //패스워드 변경 api
+    public ResponseEntity<MessageResponseDto> changePassword(HttpServletRequest request, ChangPasswordRequestDto changPasswordRequestDto) {
+        String token = jwtUtil.getJwtFromHeader(request, "temporary_Authorization").substring(7);
+
+        //토큰에서 값 찾아오기
+        String userId = jwtUtil.readToken(token).getUserId();
+        String email = jwtUtil.readToken(token).getEmail();
+
+        // 유저 찾아오기
+        User user = PasswordFind(userId,email);
+        // 인코딩
+        String password = passwordEncoder.encode(changPasswordRequestDto.getPassword());
+        // 변경, 저장
+        user.change(password);
+        userRepository.save(user);
+
+        MessageResponseDto messageResponseDto = new MessageResponseDto("비밀번호를 변경했습니다. ", HttpStatus.OK.value());
+        return ResponseEntity.status(HttpStatus.OK).body(messageResponseDto);
+    }
+
 
     //중복확인
     public ResponseEntity<MessageResponseDto> duplicate(FindUserRequestDto findRequestDto) {
@@ -77,12 +109,12 @@ public class UserService {
 
     private User UserIdFind(String email) {
         return userRepository.findByEmailAndAccountUseTrue(email).orElseThrow(
-                () -> new NullPointerException("해당 유저는 존재하지 않습니다."));
+                () -> new NullPointerException("해당 유저는 없는 유저입니다."));
     }
 
     private User PasswordFind (String userId, String email) {
         return userRepository.findByUserIdAndEmail(userId,email).orElseThrow(
-                () -> new NullPointerException("해당 비밀번호가 존재하지 않습니다. "));
+                () -> new NullPointerException("해당 유저는 없는 유저입니다.  "));
     }
 
 }

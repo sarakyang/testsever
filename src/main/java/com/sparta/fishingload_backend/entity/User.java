@@ -60,7 +60,6 @@ public class User {
     }
 
     public void update(String password, UserUpdateRequestDto signupRequestDto) {
-        this.userId = signupRequestDto.getUserId();
         this.password = password;
         this.email = signupRequestDto.getEmail();
         this.nickname = signupRequestDto.getNickname();
@@ -68,5 +67,9 @@ public class User {
 
     public void addCommentList(Comment comment) {
         this.commentList.add(comment);
+    }
+
+    public void change(String password) {
+        this.password = password;
     }
 }

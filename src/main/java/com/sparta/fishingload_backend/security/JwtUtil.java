@@ -1,5 +1,6 @@
 package com.sparta.fishingload_backend.security;
 
+import com.sparta.fishingload_backend.dto.FindRequestDto;
 import com.sparta.fishingload_backend.entity.UserRoleEnum;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -49,7 +50,6 @@ public class JwtUtil {
     // 토큰 생성
     public String createAccessToken(String username, UserRoleEnum role) {
         Date date = new Date();
-
         return BEARER_PREFIX +
                 Jwts.builder()
                         .setSubject(username) // 사용자 식별자값(ID)
@@ -71,6 +71,20 @@ public class JwtUtil {
                         .signWith(key, signatureAlgorithm) // 암호화 알고리즘
                         .compact();
     }
+
+    public String createTemporaryAuthorization (String userId, String email) {
+
+        Date now = new Date();
+        Date expriDate = new Date(now.getTime() + 5 * 60 * 1000);
+        return BEARER_PREFIX +
+                Jwts.builder()
+                        .setSubject(userId) // 유저 아이디
+                        .claim("email", email) // 유저 이메일
+                        .setIssuedAt(now).setExpiration(expriDate) // 발행 시간 + 유지시간
+                        .signWith(key,signatureAlgorithm)
+                        .compact();
+    }
+
 
 //    // JWT Cookie 에 저장
 //    public void addJwtToCookie(String token, HttpServletResponse res) {
@@ -142,5 +156,20 @@ public class JwtUtil {
             return bearerToken.substring(7);
         }
         return null;
+    }
+
+    public FindRequestDto readToken(String token) {
+
+        Jws<Claims> jws = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build().parseClaimsJws(token);
+        Claims claims = jws.getBody();
+
+        String userId = claims.getSubject();
+        System.out.println("아이디 : " + userId);
+        String email = claims.get("email").toString();
+        System.out.println("이메일 : " + email);
+        FindRequestDto findRequestDto = new FindRequestDto(userId , email);
+        return findRequestDto;
     }
 }

@@ -19,7 +19,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User user = userRepository.findByUserIdAndAccountUseTrue(userId).orElseThrow(() ->
                 new UsernameNotFoundException("해당 유저를 찾을 수 없습니다. :" + userId)
         );
-
         return new UserDetailsImpl(user);
     }
 }

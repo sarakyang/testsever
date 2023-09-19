@@ -25,7 +25,7 @@ public class SignupRequestDto {
     private String nickname;
 
     @NotBlank
-    @Pattern(message = "잘못된 email입니다. " , regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]+$" ,
+    @Pattern(message = "잘못된 email입니다. " , regexp = "^[a-zA-Z0-9._%+-]{1,64}@[a-zA-Z0-9.-]{1,255}\\.[a-zA-Z]{2,6}$" ,
             groups = PatternCheckGroup.class)
     private String email;
 
