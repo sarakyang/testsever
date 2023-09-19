@@ -3,6 +3,7 @@ package com.sparta.fishingload_backend.controller;
 import com.sparta.fishingload_backend.dto.*;
 import com.sparta.fishingload_backend.security.ValidationGroups;
 import com.sparta.fishingload_backend.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -40,4 +41,11 @@ public class UserController {
     public ResponseEntity<MessageResponseDto> duplicate (@RequestBody FindUserRequestDto findRequestDto) {
         return userService.duplicate(findRequestDto);
     }
+
+    // 스웨거용 로그인 API
+    @PostMapping("/user/signin")
+    public ResponseEntity<MessageResponseDto> signin(@RequestBody LoginRequestDto requestDto, HttpServletResponse res) {
+        return userService.signin(requestDto, res);
+    }
+
 }
