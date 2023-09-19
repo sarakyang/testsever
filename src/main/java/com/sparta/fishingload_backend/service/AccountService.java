@@ -37,8 +37,8 @@ public class AccountService {
     }
 
     //개인정보 수정
-    public AccountResponseDto UserUpdate(Long id, UserUpdateRequestDto updateRequestDto, User user) {
-        if (!(id.equals(user.getId()))&& user.getRole() == UserRoleEnum.ADMIN ) {
+    public AccountResponseDto UserUpdate(String userId, UserUpdateRequestDto updateRequestDto, User user) {
+        if (!(userId.equals(user.getUserId()))&& user.getRole() == UserRoleEnum.ADMIN ) {
             throw new IllegalArgumentException("해당 유저만 수정할 수 있습니다.");
         }
         String password = passwordEncoder.encode(updateRequestDto.getPassword());

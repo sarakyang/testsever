@@ -17,8 +17,7 @@ public class UserUpdateRequestDto {
     @Pattern(message = "잘못된 nickname입니다. " , regexp = "^[a-z0-9A-Z가-힝]+$", groups = ValidationGroups.PatternCheckGroup.class)
     private String nickname;
 
-    @Pattern(message = "잘못된 email입니다. " , regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]+$" ,
+    @Pattern(message = "잘못된 email입니다. " , regexp = "^[a-zA-Z0-9._%+-]{1,64}@[a-zA-Z0-9.-]{1,255}\\.[a-zA-Z]{2,6}$" ,
             groups = ValidationGroups.PatternCheckGroup.class)
     private String email;
-
 }

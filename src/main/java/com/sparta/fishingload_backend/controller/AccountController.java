@@ -23,10 +23,10 @@ public class AccountController {
     }
 
     //개인정보 수정
-    @PutMapping("/account/{id}")
-    public AccountResponseDto UserUpdate (@PathVariable Long id , @RequestBody UserUpdateRequestDto updateRequestDto,
+    @PutMapping("/account/{userId}")
+    public AccountResponseDto UserUpdate (@PathVariable String userId , @RequestBody UserUpdateRequestDto updateRequestDto,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return accountService.UserUpdate(id, updateRequestDto, userDetails.getUser());
+        return accountService.UserUpdate(userId, updateRequestDto, userDetails.getUser());
     }
 
     //My Page 회원이 작성한 게시글 (차후 +댓글 )

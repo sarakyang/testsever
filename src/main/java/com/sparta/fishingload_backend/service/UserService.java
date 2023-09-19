@@ -65,11 +65,12 @@ public class UserService {
 
     //비밀번호 찾기
     public ResponseEntity<MessageResponseDto> findPassword(FindRequestDto findRequestDto) {
+        PasswordFind(findRequestDto.getUserId(), findRequestDto.getEmail());
         String token = jwtUtil.createTemporaryAuthorization(findRequestDto.getUserId() ,findRequestDto.getEmail() );
 
         //헤더에 담기
         HttpHeaders headers = new HttpHeaders();
-        headers.set("temporary_Authorization" , "Bearer " + token);
+        headers.set("Temporary_Authorization" , token);
         //메세지
         MessageResponseDto messageResponseDto = new MessageResponseDto("새로운 비밀번호를 설정합니다. ", HttpStatus.OK.value());
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body((messageResponseDto));
