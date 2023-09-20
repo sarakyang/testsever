@@ -4,7 +4,6 @@ import com.sparta.fishingload_backend.dto.*;
 import com.sparta.fishingload_backend.entity.Comment;
 import com.sparta.fishingload_backend.entity.Post;
 import com.sparta.fishingload_backend.entity.User;
-import com.sparta.fishingload_backend.entity.UserRoleEnum;
 import com.sparta.fishingload_backend.repository.PostRepository;
 import com.sparta.fishingload_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -37,11 +36,24 @@ public class AccountService {
     }
 
     //개인정보 수정
-    public AccountResponseDto UserUpdate(UserUpdateRequestDto updateRequestDto, User user) {
-        String password = passwordEncoder.encode(updateRequestDto.getPassword());
-        user.update(password, updateRequestDto);
+    public ResponseEntity<MessageResponseDto> UserUpdate(UserUpdateRequestDto updateRequestDto, User user) {
+        // 입력값이 null일 경우
+        if (updateRequestDto.getPassword() != null) {
+            String password = passwordEncoder.encode(updateRequestDto.getPassword());
+            user.setPassword(password);
+        }
+        if (updateRequestDto.getEmail() != null ) {
+            String email = updateRequestDto.getEmail();
+            user.setEmail(email);
+        }
+        if (updateRequestDto.getNickname() != null) {
+            String nickname = updateRequestDto.getNickname();
+            user.setNickname(nickname);
+        }
+
         userRepository.save(user);
-        return new AccountResponseDto(user);
+        MessageResponseDto messageResponseDto = new MessageResponseDto( "회원님의 정보를 수정하였습니다. ", HttpStatus.OK.value());
+        return ResponseEntity.status(HttpStatus.OK).body(messageResponseDto);
     }
 
     //마이페이지 -> 자신이 쓴 글

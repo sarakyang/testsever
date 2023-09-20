@@ -24,7 +24,7 @@ public class AccountController {
 
     //개인정보 수정
     @PutMapping("/account")
-    public AccountResponseDto UserUpdate ( @RequestBody UserUpdateRequestDto updateRequestDto,
+    public ResponseEntity<MessageResponseDto> UserUpdate ( @RequestBody UserUpdateRequestDto updateRequestDto,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return accountService.UserUpdate(updateRequestDto, userDetails.getUser());
     }

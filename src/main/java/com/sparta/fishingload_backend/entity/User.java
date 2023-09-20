@@ -59,12 +59,6 @@ public class User {
         this.postList.add(post);
     }
 
-    public void update(String password, UserUpdateRequestDto signupRequestDto) {
-        this.password = password;
-        this.email = signupRequestDto.getEmail();
-        this.nickname = signupRequestDto.getNickname();
-    }
-
     public void addCommentList(Comment comment) {
         this.commentList.add(comment);
     }
