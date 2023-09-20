@@ -37,10 +37,7 @@ public class AccountService {
     }
 
     //개인정보 수정
-    public AccountResponseDto UserUpdate(String userId, UserUpdateRequestDto updateRequestDto, User user) {
-        if (!(userId.equals(user.getUserId()))&& user.getRole() == UserRoleEnum.ADMIN ) {
-            throw new IllegalArgumentException("해당 유저만 수정할 수 있습니다.");
-        }
+    public AccountResponseDto UserUpdate(UserUpdateRequestDto updateRequestDto, User user) {
         String password = passwordEncoder.encode(updateRequestDto.getPassword());
         user.update(password, updateRequestDto);
         userRepository.save(user);

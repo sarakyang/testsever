@@ -9,8 +9,6 @@ import com.sparta.fishingload_backend.repository.UserRepository;
 import com.sparta.fishingload_backend.security.JwtUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
-import com.sparta.fishingload_backend.security.JwtUtil;
-import com.sparta.fishingload_backend.security.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -74,17 +72,15 @@ public class UserService {
         PasswordFind(findRequestDto.getUserId(), findRequestDto.getEmail());
         String token = jwtUtil.createTemporaryAuthorization(findRequestDto.getUserId() ,findRequestDto.getEmail() );
 
-        //헤더에 담기
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Temporary_Authorization" , token);
         //메세지
         MessageResponseDto messageResponseDto = new MessageResponseDto("새로운 비밀번호를 설정합니다. ", HttpStatus.OK.value());
-        return ResponseEntity.status(HttpStatus.OK).headers(headers).body((messageResponseDto));
+        return ResponseEntity.status(HttpStatus.OK).header("Temporary_Authorization", token).body((messageResponseDto));
     }
 
     //패스워드 변경 api
-    public ResponseEntity<MessageResponseDto> changePassword(HttpServletRequest request, ChangPasswordRequestDto changPasswordRequestDto) {
-        String token = jwtUtil.getJwtFromHeader(request, "temporary_Authorization").substring(7);
+    public ResponseEntity<MessageResponseDto> changePassword(HttpServletRequest request,
+                                                             ChangPasswordRequestDto changPasswordRequestDto) {
+        String token = jwtUtil.getJwtFromHeader(request, "temporary_Authorization");
 
         //토큰에서 값 찾아오기
         String userId = jwtUtil.readToken(token).getUserId();
