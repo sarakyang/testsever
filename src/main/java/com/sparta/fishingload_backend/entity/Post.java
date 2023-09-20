@@ -41,6 +41,10 @@ public class Post extends Timestamped{
     @Column(name = "locationdate")
     private String locationdate;
 
+    @ElementCollection
+    @CollectionTable(name = "coordinates")
+    private List<Double> coordinates = new ArrayList<>();
+
     @ManyToOne
     private Category category;
 
@@ -58,6 +62,7 @@ public class Post extends Timestamped{
         this.contents = requestDto.getContents();
         this.fishtype = requestDto.getFishtype();
         this.locationdate = requestDto.getLocationdate();
+        this.coordinates = requestDto.getCoordinates();
     }
 
     public void update(PostRequestDto requestDto) {
@@ -65,6 +70,7 @@ public class Post extends Timestamped{
         this.contents = requestDto.getContents();
         this.fishtype = requestDto.getFishtype();
         this.locationdate = requestDto.getLocationdate();
+        this.coordinates = requestDto.getCoordinates();
     }
 
     public void addPostLikeList(PostLike postLike) {

@@ -21,6 +21,7 @@ public class PostResponseDto {
     private LocalDateTime modifiedTime;
     private String fishtype;
     private String locationdate;
+    private List<Double> coordinates;
     private Category category;
     private List<Comment> commentList;
 
@@ -36,5 +37,6 @@ public class PostResponseDto {
         this.locationdate = post.getLocationdate();
         this.category = post.getCategory();
         this.commentList = post.getCommentList();
+        this.coordinates = post.getCoordinates();
     }
 }
