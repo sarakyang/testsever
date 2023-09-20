@@ -24,6 +24,10 @@ import java.util.List;
         type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.HEADER,
         name = JwtUtil.REFRESH_HEADER, description = "Auth Refresh Token"
 )
+@SecurityScheme(
+        type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.HEADER,
+        name = "Temporary_Authorization", description = "Temporary"
+)
 public class SwaggerConfig {
 
     @Bean
@@ -39,6 +43,7 @@ public class SwaggerConfig {
         List<SecurityRequirement> securityRequirementList = new ArrayList<>();
         securityRequirementList.add(new SecurityRequirement().addList(JwtUtil.AUTHORIZATION_HEADER));
         securityRequirementList.add(new SecurityRequirement().addList(JwtUtil.REFRESH_HEADER));
+        securityRequirementList.add(new SecurityRequirement().addList("Temporary_Authorization"));
 
         return new OpenAPI()
                 .info(new Info().title("FishingLoad API")
