@@ -54,7 +54,7 @@ public class PostController {
     }
 
     @GetMapping("/post/category/{id}")
-    public PostListResponseDto getCategoryPost(@PathVariable Long id) {
-        return postService.getCategoryPost(id);
+    public PostListResponseDto getCategoryPost(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return postService.getCategoryPost(id, userDetails.getUser());
     }
 }
