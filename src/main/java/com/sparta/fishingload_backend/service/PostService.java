@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -121,9 +122,14 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public PostListResponseDto getCategoryPost(Long id) {
+    public PostListResponseDto getCategoryPost(Long id, User user) {
         PostListResponseDto responseDto = new PostListResponseDto();
-        List<PostResponseDto> list = postRepository.findAllByCategoryAndPostUseTrue(findCategory(id)).stream().map(PostResponseDto::new).toList();
+        List<PostResponseDto> list;
+        if (id == 3) {
+            list = postRepository.findAllByCategoryIdAndPostUseTrue(id).stream().map(PostResponseDto::new).toList();
+        } else {
+            list = postRepository.findAllByCategoryIdNotLikeAndAccountIdAndPostUseTrue(3L, user.getUserId()).stream().map(PostResponseDto::new).toList();
+        }
         for(PostResponseDto postResponseDto : list){
             responseDto.setPost(postResponseDto);
         }
