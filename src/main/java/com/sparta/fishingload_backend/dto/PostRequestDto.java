@@ -8,5 +8,6 @@ public class PostRequestDto {
     private String contents;
     private String fishtype;
     private String locationdate;
+    private Double coordinates;
     private Long categoryId;
 }
