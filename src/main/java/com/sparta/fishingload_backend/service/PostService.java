@@ -67,6 +67,7 @@ public class PostService {
         return responseDto;
     }
 
+    @Transactional
     public PostResponseDto updatePost(Long id, PostRequestDto requestDto, User user) {
         Post post = findPost(id);
 
@@ -77,6 +78,7 @@ public class PostService {
         return new PostResponseDto(post);
     }
 
+    @Transactional
     public ResponseEntity<MessageResponseDto> deletePost(Long id, User user) {
         Post post = findPost(id);
 
@@ -93,6 +95,7 @@ public class PostService {
         return ResponseEntity.status(HttpStatus.OK).body(message);
     }
 
+    @Transactional
     public ResponseEntity<MessageResponseDto> likePost(Long id, User user) {
         Post post = findPost(id);
         User userSelect = findUser(user.getUserId());
