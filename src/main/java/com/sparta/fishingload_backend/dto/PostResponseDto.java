@@ -21,7 +21,7 @@ public class PostResponseDto {
     private LocalDateTime modifiedTime;
     private String fishtype;
     private String locationdate;
-    private Double coordinates;
+    private List<Double> coordinates;
     private Category category;
     private List<Comment> commentList;
 
