@@ -30,7 +30,7 @@ dependencies {
 
 	// MySQL
 	runtimeOnly 'com.mysql:mysql-connector-j'
-	runtimeOnly 'mysql:mysql-connector-java'
+	implementation 'mysql:mysql-connector-java:8.0.28'
 
 	// Security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
