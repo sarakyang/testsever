@@ -10,7 +10,13 @@ jobs:
 
     steps:
       - uses: actions/setup-java@v3
+      - uses: actions/checkout@2
         with:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew clean build
