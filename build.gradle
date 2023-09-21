@@ -30,6 +30,7 @@ dependencies {
 
 	// MySQL
 	runtimeOnly 'com.mysql:mysql-connector-j'
+	runtimeOnly 'mysql:mysql-connector-java'
 
 	// Security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -42,7 +43,6 @@ dependencies {
 
 	// json
 	implementation 'org.json:json:20230227'
-
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -53,12 +53,6 @@ dependencies {
 
 	//Spring Email
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
-
-//	//redis
-//	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-//
-//	//thymeleaf
-//	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
 	//Json
 	implementation 'org.json:json:20230227'
