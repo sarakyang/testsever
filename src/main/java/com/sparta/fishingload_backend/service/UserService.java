@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -149,5 +150,10 @@ public class UserService {
 
         MessageResponseDto message = new MessageResponseDto("로그인 성공했습니다.", HttpStatus.OK.value());
         return ResponseEntity.status(HttpStatus.OK).body(message);
+    }
+
+    public ResponseEntity<MessageResponseDto> test() {
+        MessageResponseDto messageResponseDto = new MessageResponseDto("성공", HttpStatus.OK.value());
+        return ResponseEntity.status(HttpStatus.OK).body(messageResponseDto);
     }
 }

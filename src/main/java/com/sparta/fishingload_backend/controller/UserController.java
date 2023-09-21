@@ -52,4 +52,9 @@ public class UserController {
         return userService.signin(requestDto, res);
     }
 
+    @GetMapping ("/user/test")
+    public ResponseEntity<MessageResponseDto> test (){
+        return userService.test();
+    }
+
 }
