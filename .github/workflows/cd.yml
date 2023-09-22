@@ -54,7 +54,7 @@ jobs:
       - name: Deploy to AWS EC2 from S3
         run: |
           aws deploy create-deployment \
-            --application-name plese\
+            --application-name plese \
             --deployment-config-name CodeDeployDefault.AllAtOnce \
-            --deployment-group-name plese-group\
+            --deployment-group-name plese-group \
             --s3-location bucket=cointalk-deploy,key=$GITHUB_SHA.zip,bundleType=zip    
