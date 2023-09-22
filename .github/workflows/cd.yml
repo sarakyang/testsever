@@ -55,7 +55,7 @@ jobs:
 
         run: |
           aws deploy create-deployment \
-            --application-name plese \
-            --deployment-config-name CodeDeployDefault.AllAtOnce \
-            --deployment-group-name plese-group \
+            --application-name: plese \
+            --deployment-config-name: CodeDeployDefault.AllAtOnce \
+            --deployment-group-name: plese-group \
             --s3-location bucket=cointalk-deploy,key=$GITHUB_SHA.zip,bundleType=zip    
