@@ -75,8 +75,8 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           aws deploy create-deployment \
-          --application-name plese \
-          --deployment-group-name plese-group \
+          --application-name bibari \
+          --deployment-group-name bibari-group \
           --deployment-config-name CodeDeployDefault.AllAtOnce \
           --file-exists-behavior OVERWRITE \
           --s3-location bucket=cointalk-deploy,key=fishingLoad.zip,bundleType=zip \
